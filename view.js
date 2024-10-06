@@ -4,7 +4,7 @@ export { initView, getDirection,  updateTile, clearTile, removeClass, gameOver, 
 
 const board = document.querySelector("#grid");
 let tiles = [];
-let currentDirection = 1;
+let currentDirection = -1;
 let rowSize;
 
 const validInput = ["w", "a", "s", "d", "arrowdown", "arrowright", "arrowup", "arrowleft"];
@@ -23,7 +23,7 @@ function initView(sizeOfGrid) {
 function newGame() {
   clearBoard()
   document.querySelector("#gameOver").textContent = "";
-  // document.querySelector("#restart-btn").hidden = true;
+  document.querySelector("#restart-btn").hidden = true;
 }
 
 function keyPressed(event) {

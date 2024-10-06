@@ -74,7 +74,7 @@ export default class Queue {
     let current = this.head;
     while (current) {
       for (const entry of allEntries) {
-        if (entry.data.row == current.data.row && entry.data.col == current.data.col) {
+        if (this.dataMatches(entry.data, current.data)) {
           return true;
         }
       }
@@ -82,6 +82,10 @@ export default class Queue {
       current = current.next;
     }
     return false;
+  }
+
+  dataMatches(data1, data2){
+    return data1.row == data2.row && data1.col == data2.col
   }
 
   size() {

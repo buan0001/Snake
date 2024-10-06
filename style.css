@@ -21,8 +21,8 @@ body{
 .cell{
     width: 2em;
     height: 2em;
-    background-color: rgb(90, 82, 82);
-    border: white 1px solid;
+    background-color: rgb(90, 82, 82, 0.5);
+    border: rgba(214, 209, 209, 0.2) 1px solid;
 }
 
 .snake{

@@ -6,9 +6,9 @@ export { start };
 window.addEventListener("load", init);
 
 let model;
-let gridSize = { rows: 3, cols: 3 };
+// let gridSize = { rows: 3, cols: 3 };
 // let gridSize = { rows: 10, cols: 10 };
-// let gridSize = { rows: 20, cols: 30};
+let gridSize = { rows: 20, cols: 30 };
 let foodObj = { row: -1, col: -1, val: "food" };
 let timer = 400;
 let highscore = 0;
@@ -23,8 +23,7 @@ function init() {
 function start() {
   console.log("starting new game in controller");
   model = new Queue();
-  model.enqueue({ row: gridSize.rows - 1, col: gridSize.cols - 1, val: "snake" });
-  //   model.enqueue({ row: 5, col: 5, val: "snake" });
+  model.enqueue({ row: Math.floor(gridSize.rows / 2), col: Math.floor(gridSize.cols / 2), val: "snake" });
 
   view.newGame();
   spawnFood();
@@ -32,10 +31,45 @@ function start() {
 }
 
 function spawnFood() {
-  console.log("Spawning food");
+    // Get all the currently occupied tiles
+  const snakeIndices = [];
+  let index = 0;
+  let current = model.get(index++);
+  while (current) {
+    // Converting rows and cols to indexes for easier arithmetic
+    snakeIndices.push(current.data.row * gridSize.rows + current.data.col);
+    current = model.get(index++);
+  }
 
-  foodObj.row = Math.floor(Math.random() * gridSize.rows);
-  foodObj.col = Math.floor(Math.random() * gridSize.cols);
+  let maxIndex = gridSize.rows * gridSize.cols;
+  const foodIndex = Math.floor(Math.random() * maxIndex);
+  let startIndex = foodIndex;
+  let occupied = true;
+  let change = 1;
+
+  // Compare the current index to every index in the taken array
+  // until the entire array has been searched without finding a match
+  while (occupied) {
+    for (const index of snakeIndices) {
+      if (index == foodIndex) {
+        // If we get to the last legal tile without finding a free tile, start looking in the opposite direction
+        if (startIndex == maxIndex - 1) {
+          change = -1;
+          foodIndex = startIndex;
+        } else if (foodIndex == 0) {
+          console.log("No available tiles for food to spawn!! you won?");
+          break;
+        }
+        foodIndex += change;
+        break;
+      }
+    }
+    occupied = false;
+  }
+  
+  foodObj.row = Math.floor(foodIndex / gridSize.cols);
+  foodObj.col = Math.floor(foodIndex % gridSize.rows);
+
   view.updateTile(foodObj);
 }
 
@@ -81,8 +115,8 @@ function tick() {
     // Stop the next food from spawning
     clearTimeout(nextSpawn);
   } else {
+
     if (isOnFood(newData)) {
-      console.log("eating");
       view.removeClass(foodObj);
       // Make sure it cant be eaten more than once
       foodObj.col = -1;
@@ -91,6 +125,7 @@ function tick() {
 
       nextSpawn = setTimeout(spawnFood, timer * 4);
     }
+
     setTimeout(tick, timer);
     for (const tile of model) {
       view.updateTile(tile.data);
