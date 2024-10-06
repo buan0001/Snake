@@ -1,26 +1,24 @@
 export default class Queue {
   head = null;
   tail = null;
+  capacity = 1;
 
   constructor(head = null) {
     this.head = head;
     this.tail = head;
   }
 
-  [Symbol.iterator]() {
-    let current = this.head;
+  eat() {
+    this.capacity++;
+    return this.capacity;
+  }
 
-    return {
-      next: () => {
-        if (current) {
-          const returnVal = current;
-          current = current.next;
-          return { value: returnVal, done: false };
-        } else {
-          return { done: true };
-        }
-      },
-    };
+  move(data) {
+    if (this.size() >= this.capacity) {
+      this.dequeue();
+    }
+    this.enqueue(data);
+    return this.tail;
   }
 
   enqueue(data) {
@@ -37,19 +35,17 @@ export default class Queue {
   }
 
   dequeue() {
+    // Empty list
     if (!this.head) {
-      console.log("empty list");
-
       return;
     }
+    // More than one element
     if (this.head.next) {
-      console.log("not empty");
-
       this.head = this.head.next;
-    } else {
-      console.log("removing last element from list");
-      this.head = null;
-      this.tail = null;
+    }
+    // Exactly one element
+    else {
+      this.clear();
     }
   }
 
@@ -68,14 +64,18 @@ export default class Queue {
     return current;
   }
 
+  clear() {
+    this.head = null;
+    this.tail = null;
+  }
+
   size() {
     let current = this.head;
     let count = 0;
-    while (current) {
+    while (current) {      
       count++;
       current = current.next;
     }
-    console.log("count", count);
     return count;
   }
   dumpList() {
@@ -85,11 +85,27 @@ export default class Queue {
       current = current.next;
     }
   }
+
+  [Symbol.iterator]() {
+    let current = this.head;
+
+    return {
+      next: () => {
+        if (current) {
+          const returnVal = current;
+          current = current.next;
+          return { value: returnVal, done: false };
+        } else {
+          return { done: true };
+        }
+      },
+    };
+  }
 }
 
 class Node {
-  data = null;
-  next = null;
+  data;
+  next;
   constructor(data = null, next = null) {
     this.data = data;
     this.next = next;
