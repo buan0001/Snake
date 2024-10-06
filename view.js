@@ -4,7 +4,7 @@ export { initView, getDirection,  updateTile, clearTile, removeClass, gameOver, 
 
 const board = document.querySelector("#grid");
 let tiles = [];
-let currentDirection = -1;
+let currentDirection = null;
 let rowSize;
 
 const validInput = ["w", "a", "s", "d", "arrowdown", "arrowright", "arrowup", "arrowleft"];
