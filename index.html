@@ -1,14 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Snake 🐍</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <div id="grid"></div>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="other">
+      <div id="stats">
+        <h2 id="gameOver"></h2>
+        <h3>Your highscore is <span id="highscore">0</span></h3>
+        <button id="restart-btn">Restart</button>
+      </div>
+    </div>
+
     
-</body>
-<script src="controller.js" type="module"></script>
+    <div id="grid"></div>
+  </body>
+  <script src="controller.js" type="module"></script>
 </html>

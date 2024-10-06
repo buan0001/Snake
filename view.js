@@ -1,47 +1,37 @@
 import * as controller from "./controller.js";
 
-export { initView, getDirection, updateBoard, updateTile, clearTile };
+export { initView, getDirection,  updateTile, clearTile, removeClass, gameOver, newGame };
 
 const board = document.querySelector("#grid");
 let tiles = [];
 let currentDirection = 1;
-// let currentDirection = "a";
-let gridSize;
+let rowSize;
 
 const validInput = ["w", "a", "s", "d", "arrowdown", "arrowright", "arrowup", "arrowleft"];
-// const validInput = ["w", "a", "s", "d", "arrowup", "arrowright", "arrowdown", "arrowleft"];
 
 function initView(sizeOfGrid) {
-  gridSize = sizeOfGrid;
-  console.log("View initted, gridSize is:", sizeOfGrid);
+  rowSize = sizeOfGrid.cols;
+
   document.addEventListener("keydown", keyPressed);
+  document.querySelector("#restart-btn").addEventListener("click", controller.start);
+  board.style.setProperty("--GRID_WIDTH", sizeOfGrid.cols);
 
-  board.style.setProperty("--GRID_WIDTH", sizeOfGrid);
-
+  
   initBoard(sizeOfGrid);
+}
+
+function newGame() {
+  clearBoard()
+  document.querySelector("#gameOver").textContent = "";
+  // document.querySelector("#restart-btn").hidden = true;
 }
 
 function keyPressed(event) {
   const key = event.key.toLowerCase();
-  // const validInput = [
-  //   ["w", "a", "s", "d"],
-  //   ["arrowdown", "arrowleft", "arrowup", "arrowright"],
-  // ];
-
-  // let found = false;
-  // for (const subArr of validInput) {
-  //   for (const entry of subArr) {
-  //     if (entry == key) {
-  //       found = true;
-  //       break;
-  //     }
-  //   }
-  //   if (found) break;
-  // }
   const foundIndex = validInput.findIndex((element) => element == key);
 
   if (foundIndex >= 0 && !isOppositeDirection(key)) {
-    console.log("not opposite direction");
+    // console.log("not opposite direction");
 
     currentDirection = foundIndex;
   }
@@ -52,26 +42,42 @@ function getDirection() {
 }
 
 function initBoard(gridSize) {
-  for (let i = 0; i < gridSize * gridSize; i++) {
+  board.innerHTML = "";
+  for (let i = 0; i < gridSize.rows * gridSize.cols; i++) {
     const node = document.createElement("div");
     node.classList.add("cell");
     node.id = i;
     board.appendChild(node);
     tiles.push(node);
   }
-  console.log("tiles:", tiles);
 }
 
-function updateBoard(model) {}
+function clearBoard() {
+  for (const tile of tiles) {
+    tile.className = "cell"
+  }
+}
 
 function updateTile(data) {
-  const index = data.row * gridSize + data.col;
+  const index = data.row * rowSize + data.col;
   tiles[index].classList.toggle(data.val);
 }
 
+function removeClass(data) {
+  const index = data.row * rowSize + data.col;
+  tiles[index].classList.remove(data.val);
+}
+
 function clearTile(data) {
-  const index = data.row * gridSize + data.col;
+  const index = data.row * rowSize + data.col;
   tiles[index].className = "cell";
+}
+
+function gameOver(highscore) {
+  document.querySelector("#gameOver").textContent = "You lost!!";
+  document.querySelector("#restart-btn").hidden = false;
+  
+  document.querySelector("#highscore").textContent = highscore;
 }
 
 function isOppositeDirection(key) {

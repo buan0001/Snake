@@ -69,10 +69,25 @@ export default class Queue {
     this.tail = null;
   }
 
+  hasDuplicates() {
+    const allEntries = [];
+    let current = this.head;
+    while (current) {
+      for (const entry of allEntries) {
+        if (entry.data.row == current.data.row && entry.data.col == current.data.col) {
+          return true;
+        }
+      }
+      allEntries.push(current);
+      current = current.next;
+    }
+    return false;
+  }
+
   size() {
     let current = this.head;
     let count = 0;
-    while (current) {      
+    while (current) {
       count++;
       current = current.next;
     }
